@@ -1,4 +1,4 @@
-package net.geoffcox.agario_clone;
+package net.geoffcox.agarioclone;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
