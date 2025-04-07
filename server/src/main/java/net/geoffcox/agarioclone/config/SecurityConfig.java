@@ -1,5 +1,6 @@
-package net.geoffcox.agarioclone.security;
+package net.geoffcox.agarioclone.config;
 
+import net.geoffcox.agarioclone.security.JwtAuthenticationFilter;
 import net.geoffcox.agarioclone.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -29,11 +30,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter) throws Exception {
         http
-                //.cors(cors -> cors.configurationSource(corsConfigurationSource())) // New CORS configuration
-                .cors(cors -> cors.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // New CORS configuration
+                //.cors(cors -> cors.disable())
                 .csrf(csrf -> csrf.disable()) // Disable CSRF for APIs
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/game-websocket/**").permitAll() // Allow WebSocket connections
+                        .requestMatchers("/ws/**").permitAll() // Allow WebSocket connections
+                        .requestMatchers("/game-websocket/info").permitAll() // Allow SockJS info endpoint
+                        .requestMatchers("/game-websocket/**/websocket").permitAll() // Allow WebSocket upgrade
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -46,7 +51,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:4200")); // Frontend URL
+        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Vite default port
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
