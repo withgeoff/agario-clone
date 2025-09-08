@@ -25,5 +25,11 @@ CREATE INDEX idx_user_username ON users (username);
 CREATE INDEX idx_user_email ON users (email);
 
 -- Data
-INSERT INTO users VALUES (uuid_generate_v4(), 'geoffcox', 'dragon789', 'geoff@okay-fine');
-INSERT INTO user_roles VALUES ('d13c3970-01f7-4bb1-9876-48849278803c', 'player');
+INSERT INTO roles (name) VALUES ('ROLE_USER');
+INSERT INTO users VALUES (uuid_generate_v4(), 'geoff@okay-fine.com', true, 'dragon789', 'geoffcox');
+
+INSERT INTO user_roles (user_id, role_id)
+SELECT u.id, r.id
+FROM users u
+         JOIN roles r ON r.name = 'ROLE_USER'
+WHERE u.username = 'geoffcox';
