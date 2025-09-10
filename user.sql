@@ -33,3 +33,12 @@ SELECT u.id, r.id
 FROM users u
          JOIN roles r ON r.name = 'ROLE_USER'
 WHERE u.username = 'geoffcox';
+
+
+-- Make sure pgcrypto is enabled in your DB
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+-- Update password for a specific user
+UPDATE users
+SET password = crypt('dragon789', gen_salt('bf'))
+WHERE username = 'geoffcox';
